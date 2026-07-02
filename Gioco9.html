@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beat Booster: Neon Reflex - Accademia dei Super Poteri ADHD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Space+Grotesk:wght@400..700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        fun: ['Fredoka', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #0b0f19;
+            background-image: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 100%);
+        }
+        .neon-border {
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5), inset 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+        .neon-glow-green {
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.8);
+        }
+        .neon-glow-red {
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.8);
+        }
+        .neon-glow-purple {
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.9);
+        }
+        
+        /* Particle animation */
+        @keyframes particle-fly {
+            0% { transform: translate(-50%, -50%) translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) translate(var(--tw-x), var(--tw-y)) scale(0); opacity: 0; }
+        }
+        .game-particle {
+            position: absolute;
+            animation: particle-fly 0.8s forwards cubic-bezier(0.1, 0.8, 0.3, 1);
+            pointer-events: none;
+            z-index: 40;
+        }
+
+        /* Screen shake */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+            20%, 40%, 60%, 80% { transform: translateX(6px); }
+        }
+        .shake-effect {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Rainbow text for fever mode */
+        @keyframes rainbow-text {
+            0%, 100% { color: #f43f5e; filter: drop-shadow(0 0 8px #f43f5e); }
+            33% { color: #10b981; filter: drop-shadow(0 0 8px #10b981); }
+            66% { color: #a855f7; filter: drop-shadow(0 0 8px #a855f7); }
+        }
+        .animate-rainbow {
+            animation: rainbow-text 1.5s infinite linear;
+        }
+
+        /* Pulse core */
+        @keyframes custom-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pulse-core {
+            animation: custom-pulse 1.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-3 sm:p-6 text-slate-100 overflow-x-hidden">
+
+    <!-- Top Logo Brand -->
+    <div class="w-full flex justify-center mb-2">
+        <img src="https://raw.githubusercontent.com/giomaglione75-crypto/boingyblue.github.io/e5cb3103735ceaff77d77fb0fa71371ebcaf78a8/logo%20Giochi.png" 
+             alt="Boingy Logo" 
+             class="max-w-[240px] sm:max-w-[280px] h-auto drop-shadow-[0_4px_12px_rgba(59,130,246,0.5)]"
+             onerror="this.src='https://placehold.co/280x80/1e1b4b/ffffff?text=Boingy+Logica'">
+    </div>
+
+    <main id="game-container" class="w-full max-w-lg bg-slate-900/80 backdrop-blur-md rounded-3xl border-4 border-violet-500/80 neon-border overflow-hidden p-5 sm:p-6 relative flex flex-col justify-between transition-all duration-300">
+        
+        <!-- Academy Ribbon and Title -->
+        <div class="text-center mb-3">
+            <span class="inline-block bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-xs sm:text-sm font-bold px-4 py-1 rounded-full uppercase tracking-wider fun-font shadow-lg animate-bounce">
+                🚀 Accademia dei Super Poteri ADHD
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-cyan-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent mt-2 fun-font tracking-tight">
+                BEAT BOOSTER!
+            </h1>
+            <p class="text-slate-400 text-xs sm:text-sm mt-0.5 font-medium uppercase tracking-widest">Sincronizza i tuoi riflessi spaziali</p>
+        </div>
+
+        <!-- Super-Visual ADHD instructions -->
+        <div class="bg-violet-950/40 border border-violet-500/30 rounded-2xl p-3.5 mb-4 text-xs sm:text-sm text-slate-200">
+            <h3 class="font-bold text-violet-300 mb-1 flex items-center gap-1.5 fun-font uppercase tracking-wider">
+                ⚡ Regole della Missione:
+            </h3>
+            <ul class="space-y-1.5">
+                <li class="flex items-center gap-2">
+                    <span class="text-emerald-400 text-base">🟢</span> 
+                    <span>Clicca / Tocca SUBITO quando vedi il <strong>Nucleo Verde</strong> o la <strong>Stella</strong> (+10 Pti!)</span>
+                </li>
+                <li class="flex items-center gap-2">
+                    <span class="text-rose-500 text-base">🔴</span> 
+                    <span><strong>NON CLICCARE</strong> se vedi il nucleo Rosso o il Glitch! Altrimenti perdi punti!</span>
+                </li>
+                <li class="flex items-center gap-2">
+                    <span class="text-yellow-400 text-base">🔥</span> 
+                    <span>Fai <strong>3 centri di fila</strong> per sbloccare l'<strong>Iper-Carica</strong> a punti DOPPI!</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Realtime HUD Stats -->
+        <div class="grid grid-cols-3 gap-2 mb-4 text-center">
+            <div class="bg-slate-800/60 border border-slate-700/50 p-2 rounded-xl">
+                <div class="text-[10px] text-slate-400 uppercase font-semibold">Tempo</div>
+                <div id="game-timer" class="text-xl font-bold text-cyan-400 fun-font">30s</div>
+            </div>
+            <div class="bg-slate-800/60 border border-slate-700/50 p-2 rounded-xl relative overflow-hidden">
+                <div class="text-[10px] text-slate-400 uppercase font-semibold">Streak</div>
+                <div id="game-streak" class="text-xl font-bold text-yellow-400 fun-font">0 🔥</div>
+            </div>
+            <div class="bg-slate-800/60 border border-slate-700/50 p-2 rounded-xl">
+                <div class="text-[10px] text-slate-400 uppercase font-semibold">Punti</div>
+                <div id="game-score" class="text-xl font-bold text-emerald-400 fun-font">0</div>
+            </div>
+        </div>
+
+        <!-- MAIN PLAYING CONTAINER -->
+        <div class="bg-slate-950/80 rounded-2xl p-6 mb-4 border border-slate-800 flex flex-col justify-center items-center relative overflow-hidden min-h-[220px]">
+            <!-- Inner background grid line effect -->
+            <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none"></div>
+
+            <!-- Pre-start Screen -->
+            <div id="start-overlay" class="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center z-20 p-4 text-center">
+                <p class="text-slate-300 text-sm mb-4">Sei pronto a testare i tuoi super-riflessi a tempo record?</p>
+                <button onclick="startGame()" class="bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white font-extrabold px-8 py-3.5 rounded-2xl shadow-[0_0_20px_rgba(139,92,246,0.6)] hover:shadow-[0_0_30px_rgba(139,92,246,0.8)] transition-all duration-200 text-lg fun-font uppercase tracking-wide transform hover:scale-105 active:scale-95">
+                    Avvia Generatore ⚡
+                </button>
+            </div>
+
+            <!-- Fever HUD Overlay -->
+            <div id="fever-hud" class="absolute top-2 left-1/2 -translate-x-1/2 opacity-0 scale-75 pointer-events-none transition-all duration-300 z-10">
+                <span class="bg-rose-500 text-white text-xs font-black px-4 py-1 rounded-full animate-pulse tracking-widest uppercase shadow-[0_0_15px_#f43f5e]">
+                    ⚡ IPER-CARICA ATTIVA 2X ⚡
+                </span>
+            </div>
+
+            <!-- REACTOR CORE (The interactive target) -->
+            <div id="reactor-target" onclick="handleTargetClick(event)" class="w-32 h-32 sm:w-36 sm:h-36 rounded-full flex flex-col items-center justify-center text-5xl cursor-pointer select-none transition-all duration-150 transform hover:scale-105 active:scale-90 bg-slate-800 border-4 border-slate-700 pointer-events-none pulse-core relative">
+                <!-- Inner glow ring -->
+                <div class="absolute inset-1 rounded-full border-2 border-white/10"></div>
+                <span id="target-emoji" class="z-10 drop-shadow-md">💤</span>
+            </div>
+
+            <div id="action-prompt" class="mt-4 text-xs font-bold uppercase tracking-widest text-slate-500 fun-font">In attesa dell'avvio...</div>
+        </div>
+
+        <!-- Boingy-Consiglio Emotional Self-Regulation -->
+        <div class="bg-gradient-to-r from-indigo-950/50 to-slate-900 border border-indigo-500/30 rounded-2xl p-3 mb-4 flex items-start gap-3">
+            <div class="text-3xl animate-bounce">💡</div>
+            <div>
+                <h4 class="font-bold text-indigo-300 text-xs sm:text-sm fun-font">Il Boingy-Consiglio di Autocontrollo:</h4>
+                <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5">
+                    Se senti l'impulso di cliccare velocissimo, <strong>fai un piccolo respiro profondo</strong> prima di colpire! La pazienza da ninja raddoppia la tua precisione e sblocca la combo massima! 🥷✨
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer Restart Button inside HUD -->
+        <div class="flex justify-between items-center pt-1">
+            <span class="text-[10px] text-slate-500 font-mono">V.2.1-HYPED</span>
+            <button onclick="resetGameEngine()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2 rounded-xl border border-slate-700/60 transition-all text-xs flex items-center gap-2">
+                🔄 Riavvia
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Holographic Sticker Gacha Box (Modal) -->
+    <div id="rewards-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl border-4 border-fuchsia-500 p-6 sm:p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(217,70,239,0.4)] scale-95 transition-all duration-300" id="rewards-modal-content">
+            <div class="text-5xl mb-2">🎁</div>
+            <h2 class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-fuchsia-400 to-cyan-400 bg-clip-text text-transparent fun-font mb-1">
+                Missione Compiuta!
+            </h2>
+            <p class="text-slate-400 text-xs sm:text-sm mb-4">Hai dominato il flusso dei riflessi cyberpunk!</p>
+            
+            <!-- Dynamic Stats Summary -->
+            <div class="grid grid-cols-2 gap-2 bg-slate-800/40 p-3 rounded-2xl mb-5 border border-slate-700/50">
+                <div>
+                    <span class="block text-[10px] text-slate-400 uppercase font-bold">Punti Totali</span>
+                    <span id="final-score" class="text-lg font-black text-emerald-400 fun-font">0</span>
+                </div>
+                <div>
+                    <span class="block text-[10px] text-slate-400 uppercase font-bold">Best Combo</span>
+                    <span id="final-combo" class="text-lg font-black text-yellow-400 fun-font">0 🔥</span>
+                </div>
+            </div>
+
+            <!-- Virtual Holographic Sticker Reward Container -->
+            <div class="bg-slate-950 border-2 border-fuchsia-500/50 rounded-2xl p-4 mb-6 flex flex-col items-center relative overflow-hidden group">
+                <!-- Glowing holographic back lights -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-fuchsia-500/10 to-yellow-500/10 animate-pulse pointer-events-none"></div>
+                <span class="text-[10px] text-fuchsia-400 font-extrabold uppercase tracking-widest mb-1 animate-pulse">✨ ADESIVO OLOGRAFICO SBLOCCATO! ✨</span>
+                <div class="w-24 h-24 rounded-full bg-slate-900 border-4 border-dashed border-cyan-400 flex items-center justify-center text-5xl shadow-[0_0_20px_rgba(34,211,238,0.3)] transform transition-transform group-hover:rotate-12 duration-300" id="gacha-sticker-badge">
+                    👾
+                </div>
+                <span class="text-base font-black text-slate-200 mt-2 fun-font tracking-wide" id="gacha-sticker-name">Cyber-Vortex 3000</span>
+                <span class="text-[9px] text-cyan-400 font-mono tracking-widest mt-0.5">EDIZIONE SPECIALE SUPER-ADHD</span>
+            </div>
+
+            <button onclick="closeRewardsAndRestart()" class="w-full bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 hover:from-cyan-600 hover:to-fuchsia-600 text-white font-black py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 text-lg fun-font uppercase tracking-wide">
+                Vai alla prossima sfida! 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- Screen toast alerts -->
+    <div id="game-toast" class="opacity-0 pointer-events-none fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-rose-950/90 border-2 border-rose-500 text-rose-200 px-6 py-3 rounded-2xl shadow-lg flex items-center gap-2 transition-all duration-300 z-50 font-medium">
+        <span class="text-xl">🛑</span>
+        <span id="toast-message" class="text-xs sm:text-sm">Riflesso frenato! Attento alla trappola rossa!</span>
+    </div>
+
+    <footer class="text-center text-[10px] sm:text-xs text-slate-500 mt-6 pb-2">
+        Prodotto educativo hi-hype per il controllo dell'impulsività visivo-motoria.
+    </footer>
+
+    <script>
+        // Web Audio API Synth Engine
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSynthSound(type) {
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            
+            if (type === 'go-click') {
+                // High futuristic beep
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, now); // A4
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } 
+            else if (type === 'fever-click') {
+                // Even sharper sci-fi retro laser
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(880, now);
+                osc.frequency.exponentialRampToValueAtTime(1760, now + 0.1);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            }
+            else if (type === 'no-go-glitch') {
+                // Low pitch error sound
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(80, now + 0.25);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } 
+            else if (type === 'fever-mode-start') {
+                // Energetic melody cascade
+                const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99]; // C Major scale ascent
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+                    gain.gain.setValueAtTime(0.1, now + idx * 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.05 + 0.15);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.05);
+                    osc.stop(now + idx * 0.05 + 0.15);
+                });
+            }
+            else if (type === 'victory') {
+                // Hype triumphant sound
+                const baseFreqs = [523.25, 659.25, 783.99, 1046.50]; // Cord C Major
+                baseFreqs.forEach((freq) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, now);
+                    osc.frequency.linearRampToValueAtTime(freq * 1.5, now + 0.4);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                });
+            }
+        }
+
+        // Game variables
+        let score = 0;
+        let streak = 0;
+        let bestStreak = 0;
+        let timer = 30; // 30 seconds game round
+        let gameActive = false;
+        let targetType = 'idle'; // 'go', 'nogo', 'fever-go'
+        let levelTimerId = null;
+        let tickIntervalId = null;
+        let changeTargetTimeoutId = null;
+
+        const targetEmojis = {
+            go: ['🟢', '⭐', '⚡', '🤖', '🪐'],
+            nogo: ['🔴', '👾', '💥', '💀', '🕸️']
+        };
+
+        const holographicStickers = [
+            { emoji: '🦖', name: 'Cyber-Rex Holo' },
+            { emoji: '🚀', name: 'Astro-Booster Neon' },
+            { emoji: '🦄', name: 'Spark Unicorn' },
+            { emoji: '🍩', name: 'Glitch Donut' },
+            { emoji: '🦊', name: 'Electro-Fox Retro' },
+            { emoji: '🍕', name: 'Neon-Pizza Deluxe' }
+        ];
+
+        // Cache elements
+        const reactorTarget = document.getElementById('reactor-target');
+        const targetEmoji = document.getElementById('target-emoji');
+        const actionPrompt = document.getElementById('action-prompt');
+        const timerText = document.getElementById('game-timer');
+        const streakText = document.getElementById('game-streak');
+        const scoreText = document.getElementById('game-score');
+        const startOverlay = document.getElementById('start-overlay');
+        const rewardsModal = document.getElementById('rewards-modal');
+        const gameContainer = document.getElementById('game-container');
+        const gameToast = document.getElementById('game-toast');
+        const toastMessage = document.getElementById('toast-message');
+        const feverHud = document.getElementById('fever-hud');
+
+        // Game loop control
+        function startGame() {
+            initAudio();
+            score = 0;
+            streak = 0;
+            bestStreak = 0;
+            timer = 30;
+            gameActive = true;
+
+            // UI adjustments
+            scoreText.textContent = score;
+            streakText.textContent = '0 🔥';
+            timerText.textContent = `${timer}s`;
+            startOverlay.classList.add('hidden');
+            reactorTarget.classList.remove('pointer-events-none');
+
+            // Sound cue
+            playSynthSound('fever-mode-start');
+
+            // Timers initialization
+            tickIntervalId = setInterval(gameTick, 1000);
+            generateNextTarget();
+        }
+
+        function gameTick() {
+            if (!gameActive) return;
+
+            timer--;
+            timerText.textContent = `${timer}s`;
+
+            if (timer <= 0) {
+                endGame();
+            }
+        }
+
+        function generateNextTarget() {
+            if (!gameActive) return;
+
+            // Reset previous styling classes
+            reactorTarget.classList.remove('neon-glow-green', 'neon-glow-red', 'neon-glow-purple', 'bg-emerald-950', 'bg-rose-950', 'bg-purple-950', 'border-emerald-500', 'border-rose-500', 'border-purple-500');
+            reactorTarget.classList.add('bg-slate-800', 'border-slate-700');
+
+            // Decide target type: 65% Go, 35% No-Go
+            const isGo = Math.random() < 0.65;
+            
+            if (isGo) {
+                if (streak >= 3) {
+                    // Fever mode
+                    targetType = 'fever-go';
+                    const list = targetEmojis.go;
+                    targetEmoji.textContent = list[Math.floor(Math.random() * list.length)];
+                    reactorTarget.classList.remove('bg-slate-800', 'border-slate-700');
+                    reactorTarget.classList.add('bg-purple-950', 'border-purple-500', 'neon-glow-purple');
+                    actionPrompt.textContent = '⚡ CLICCA ULTRA VELOCE! ⚡';
+                    actionPrompt.className = "mt-4 text-xs font-bold uppercase tracking-widest animate-rainbow fun-font";
+                    
+                    // Show Fever banner
+                    feverHud.classList.remove('opacity-0', 'scale-75');
+                    feverHud.classList.add('opacity-100', 'scale-100');
+                } else {
+                    targetType = 'go';
+                    const list = targetEmojis.go;
+                    targetEmoji.textContent = list[Math.floor(Math.random() * list.length)];
+                    reactorTarget.classList.remove('bg-slate-800', 'border-slate-700');
+                    reactorTarget.classList.add('bg-emerald-950', 'border-emerald-500', 'neon-glow-green');
+                    actionPrompt.textContent = '🟩 CLICCA! 🟩';
+                    actionPrompt.className = "mt-4 text-xs font-bold uppercase tracking-widest text-emerald-400 fun-font";
+                }
+            } else {
+                targetType = 'nogo';
+                const list = targetEmojis.nogo;
+                targetEmoji.textContent = list[Math.floor(Math.random() * list.length)];
+                reactorTarget.classList.remove('bg-slate-800', 'border-slate-700');
+                reactorTarget.classList.add('bg-rose-950', 'border-rose-500', 'neon-glow-red');
+                actionPrompt.textContent = '🟥 FERMATI! NON CLICCARE! 🟥';
+                actionPrompt.className = "mt-4 text-xs font-bold uppercase tracking-widest text-rose-500 fun-font";
+            }
+
+            // Target duration shrinks slightly as streak gets higher (ADHD dynamic challenge)
+            const baseDuration = targetType === 'fever-go' ? 800 : 1200;
+            const streakAdjustment = Math.min(streak * 50, 400); 
+            const finalDuration = Math.max(baseDuration - streakAdjustment, 600);
+
+            // Automatically switch target when timer expires
+            if (changeTargetTimeoutId) clearTimeout(changeTargetTimeoutId);
+            changeTargetTimeoutId = setTimeout(() => {
+                if (targetType === 'go' || targetType === 'fever-go') {
+                    // Missed an opportunity! Reset streak
+                    resetStreak();
+                }
+                generateNextTarget();
+            }, finalDuration);
+        }
+
+        // Interaction core
+        function handleTargetClick(event) {
+            if (!gameActive) return;
+
+            // Visual click ripple feedback
+            createFeedbackParticles(event.clientX, event.clientY);
+
+            if (targetType === 'go') {
+                // Correct click!
+                playSynthSound('go-click');
+                score += 10;
+                streak++;
+                if (streak > bestStreak) bestStreak = streak;
+
+                scoreText.textContent = score;
+                streakText.textContent = `${streak} 🔥`;
+
+                if (streak === 3) {
+                    playSynthSound('fever-mode-start'); // Play hyper-charge fanfare
+                }
+
+                // Insta-load next target
+                generateNextTarget();
+            } 
+            else if (targetType === 'fever-go') {
+                // Ultra score!
+                playSynthSound('fever-click');
+                score += 20; // Double reward during fever state!
+                streak++;
+                if (streak > bestStreak) bestStreak = streak;
+
+                scoreText.textContent = score;
+                streakText.textContent = `${streak} 🔥`;
+
+                generateNextTarget();
+            }
+            else if (targetType === 'nogo') {
+                // Trap clicked!
+                playSynthSound('no-go-glitch');
+                score = Math.max(0, score - 15);
+                resetStreak();
+
+                scoreText.textContent = score;
+                
+                // Trigger visual feedback (Screen shake)
+                triggerScreenShake();
+                showCustomToast("Impulso frenato! Era un Glitch Rosso!");
+
+                generateNextTarget();
+            }
+        }
+
+        function resetStreak() {
+            streak = 0;
+            streakText.textContent = '0 🔥';
+            feverHud.classList.add('opacity-0', 'scale-75');
+            feverHud.classList.remove('opacity-100', 'scale-100');
+        }
+
+        // Interactive visual feedback generators
+        function createFeedbackParticles(x, y) {
+            const numParticles = 12;
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'game-particle text-xl';
+                particle.textContent = targetType === 'nogo' ? '❌' : ['✨', '💎', '⭐', '🎈'][Math.floor(Math.random() * 4)];
+                
+                // Circular layout movement vectors
+                const angle = (i / numParticles) * 2 * Math.PI + (Math.random() - 0.5) * 0.5;
+                const distance = 80 + Math.random() * 60;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.setProperty('--tw-x', `${tx}px`);
+                particle.style.setProperty('--tw-y', `${ty}px`);
+
+                document.body.appendChild(particle);
+
+                // Housekeeping: clean up DOM elements
+                setTimeout(() => particle.remove(), 800);
+            }
+        }
+
+        function triggerScreenShake() {
+            gameContainer.classList.add('shake-effect');
+            setTimeout(() => {
+                gameContainer.classList.remove('shake-effect');
+            }, 400);
+        }
+
+        function showCustomToast(text) {
+            toastMessage.textContent = text;
+            gameToast.classList.remove('opacity-0', 'pointer-events-none');
+            gameToast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                gameToast.classList.remove('opacity-100');
+                gameToast.classList.add('opacity-0', 'pointer-events-none');
+            }, 1800);
+        }
+
+        // Finish Sequence and reward mechanics
+        function endGame() {
+            gameActive = false;
+            clearInterval(tickIntervalId);
+            if (changeTargetTimeoutId) clearTimeout(changeTargetTimeoutId);
+
+            reactorTarget.classList.add('pointer-events-none');
+            targetEmoji.textContent = '🏁';
+            actionPrompt.textContent = 'Sfida conclusa!';
+            actionPrompt.className = "mt-4 text-xs font-bold uppercase tracking-widest text-slate-500 fun-font";
+
+            // Open holographic rewards Gacha chest
+            setTimeout(() => {
+                playSynthSound('victory');
+                showRewardsModal();
+            }, 600);
+        }
+
+        function showRewardsModal() {
+            // Setup stats summary
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('final-combo').textContent = `${bestStreak} 🔥`;
+
+            // Draw a holographic sticker at random
+            const drawnSticker = holographicStickers[Math.floor(Math.random() * holographicStickers.length)];
+            const badge = document.getElementById('gacha-sticker-badge');
+            const name = document.getElementById('gacha-sticker-name');
+
+            badge.textContent = drawnSticker.emoji;
+            name.textContent = drawnSticker.name;
+
+            // Trigger holo color filter shift animation dynamically
+            const filterColors = ['border-cyan-400', 'border-fuchsia-400', 'border-yellow-400', 'border-rose-400'];
+            badge.className = `w-24 h-24 rounded-full bg-slate-900 border-4 border-dashed ${filterColors[Math.floor(Math.random() * filterColors.length)]} flex items-center justify-center text-5xl shadow-[0_0_20px_rgba(236,72,153,0.3)] transform transition-transform duration-300 animate-pulse`;
+
+            rewardsModal.classList.remove('hidden');
+        }
+
+        function closeRewardsAndRestart() {
+            rewardsModal.classList.add('hidden');
+            resetGameEngine();
+        }
+
+        function resetGameEngine() {
+            gameActive = false;
+            clearInterval(tickIntervalId);
+            if (changeTargetTimeoutId) clearTimeout(changeTargetTimeoutId);
+
+            // Restore defaults
+            timer = 30;
+            score = 0;
+            streak = 0;
+            bestStreak = 0;
+
+            timerText.textContent = '30s';
+            streakText.textContent = '0 🔥';
+            scoreText.textContent = '0';
+            targetEmoji.textContent = '💤';
+            actionPrompt.textContent = "In attesa dell'avvio...";
+            actionPrompt.className = "mt-4 text-xs font-bold uppercase tracking-widest text-slate-500 fun-font";
+
+            feverHud.classList.add('opacity-0', 'scale-75');
+            feverHud.classList.remove('opacity-100', 'scale-100');
+
+            reactorTarget.classList.remove('neon-glow-green', 'neon-glow-red', 'neon-glow-purple', 'bg-emerald-950', 'bg-rose-950', 'bg-purple-950', 'border-emerald-500', 'border-rose-500', 'border-purple-500');
+            reactorTarget.classList.add('bg-slate-800', 'border-slate-700');
+
+            startOverlay.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
